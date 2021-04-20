@@ -29,7 +29,8 @@ function [] = es_ci_spm(t_map,con,X,mask_img,confLevel,out_name)
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU General Public License for more details.
 % 
-% If this file is of help for your own work, please cite
+% If this file is of help for your own work, please cite Gerchen, M.F., Kirsch, P., & Feld, G.B. Brain-Wide Inferiority 
+% and Equivalence Tests in fMRI Group Analyses: Selected Applications
 %
 % Copyright (C) 2021
 %
