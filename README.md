@@ -16,4 +16,6 @@ Please note that the calculations are computationally expensive and can take up 
 
 This function is dependent on SPM 12 (https://www.fil.ion.ucl.ac.uk/spm/software/spm12/) and the Measures of Effect Size (MES) toolbox (https://github.com/hhentschke/measures-of-effect-size-toolbox).
 
-Examples.zip contains the code for the simulations in Figure 1 and the second level maps and necessary information to run g_ci_spm for the data presented in Figures 2-5 of the manuscript.    
+Examples.zip contains the code for the simulations in Figure 1 and the second level maps and necessary information to run g_ci_spm for the data presented in Figures 2-5 of the manuscript.
+
+If this function is of help for your own work, please cite Gerchen, M.F., Kirsch, P., & Feld, G.B. (2021) Brain-Wide Inferiority and Equivalence Tests in fMRI Group Analyses: Selected Applications. Human Brain Mapping. DOI: 10.1002/hbm.25664
