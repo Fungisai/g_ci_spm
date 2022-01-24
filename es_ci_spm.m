@@ -59,12 +59,6 @@ DoF = size(X,1)-rank(X);
 % estimate conversion factor from t to d
 td_fac = sqrt(con'*pinv(X'*X)*con);
 
-% flag for 'simple' two sample t-test without covariates
-tst_flag = 0;
-if size(X,2) == 2 && sum(con)==0 && sum(abs(con))==2 && (sum(X(:,1))+sum(X(:,2)))==size(X,1) && X(:,1)'*X(:,2)==0
-    tst_flag = 1;
-end
-
 %% estimate effect size g
 % load t map
 V=spm_vol(t_map);
@@ -81,49 +75,30 @@ J=(1-(3./(4*DoF-1))); % bias correction factor
 Y = Y.*J;
 
 %% estimate confidence interval for g 
-
-if tst_flag % 'simple' two sample t-test
     
-    n1 = sum(X(:,1));
-    n2 = sum(X(:,2));
-    
-    alpha=1-confLevel;
-    % critical z value corresponding to alpha
-    zCrit=norminv(1-alpha/2);
+% load mask file to extract voxel values
+V_m=spm_vol(mask_img);
+Y_m=spm_read_vols(V_m);
 
-    % approximate analytical CI
-    se=sqrt((n1+n2)./(n1.*n2) + (Y.^2./(2*n1+2*n2-4))); 
-    ci_l=Y-zCrit.*se; % CI lower limit
-    ci_u=Y+zCrit.*se; % CI upper limit
+ts = zeros(length(find(Y_m)),1); % vector of ts
+ts(:,1) = t(logical(Y_m));
 
-else % all other tests
-    
-    % load mask file to extract voxel values
-    V_m=spm_vol(mask_img);
-    Y_m=spm_read_vols(V_m);
+% estimate exact CI
+ci = zeros(2,numel(ts));
 
-    ts = zeros(length(find(Y_m)),1); % vector of ts
-    ts(:,1) = t(logical(Y_m));
-
-    % estimate exact CI
-
-        ci = zeros(2,numel(ts));
-
-        % loop over t values and estimate CI for g
-        for i=1:numel(ts)
-            t_tmp = ts(i);
-            ci_tmp=ncpci(t_tmp,'t',DoF,'confLevel',confLevel)'*td_fac; % uses the 'ncpci.m' function from the MES toolbox
-            ci(:,i) = ci_tmp;
-        end
-
-    % put lower and upper CI limit into 3D maps
-    ci_l = nan(size(Y_m));
-    ci_l(logical(Y_m)) = ci(1,:);
-
-    ci_u = nan(size(Y_m));
-    ci_u(logical(Y_m)) = ci(2,:);
-    
+% loop over t values and estimate CI for g
+for i=1:numel(ts)
+    t_tmp = ts(i);
+    ci_tmp=ncpci(t_tmp,'t',DoF,'confLevel',confLevel)'*td_fac; % uses the 'ncpci.m' function from the MES toolbox
+    ci(:,i) = ci_tmp;
 end
+
+% put lower and upper CI limit into 3D maps
+ci_l = nan(size(Y_m));
+ci_l(logical(Y_m)) = ci(1,:);
+
+ci_u = nan(size(Y_m));
+ci_u(logical(Y_m)) = ci(2,:);    
 
 %% save images
 V_out=V;
